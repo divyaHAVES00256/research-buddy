@@ -1,4 +1,11 @@
-fastapi==0.115.5
-PyMuPDF==1.24.13
-python-multipart==0.0.17
-uvicorn==0.32.1
+# Phase 1 dependencies
+fastapi==0.111.0          # Web framework — async, fast, auto-generates OpenAPI docs
+uvicorn==0.29.0           # ASGI server that runs FastAPI
+python-multipart==0.0.9   # Required by FastAPI to parse multipart/form-data (file uploads)
+pymupdf==1.24.3           # PDF text extraction (the 'fitz' import)
+ 
+# Phase 2 dependencies
+scikit-learn==1.5.0       # Provides TfidfVectorizer for keyword extraction
+numpy==1.26.4             # Required by scikit-learn for matrix operations;
+                          # also used directly for score aggregation in nlp_utils.py
+

@@ -3,13 +3,19 @@ import io
 import re                          
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-import fitz                        #PyMuPDF — imported as 'fitz' by convention
+import fitz                        #PyMuPDF
+from nlp_utils import (
+    split_into_sections,
+    extract_keywords_tfidf,
+    generate_structured_summary,
+    compute_stats,
+)
 
 # Create the FastAPI application instance
 app = FastAPI(
     title="Research Buddy API",
     version="1.0.0",
-    description="Phase 1 — PDF upload and text extraction"
+    description="Phase 2 — Structured Summarization and Analysis. Upload a PDF and get back structured insights about the paper's content.",
 )
 
 # Add CORS middleware 
@@ -21,6 +27,19 @@ app.add_middleware(
     allow_headers=["*"],    
 )
 
+# SHARED HELPER FUNCTIONS
+
+def extract_text_from_pdf(file_bytes: bytes) -> str:
+    """
+    Open a PDF from raw bytes using PyMuPDF and concatenate text from all pages into a single string.
+    """
+    # fitz.open needs to know the stream type via the 'filetype' hint
+    pdf_document = fitz.open(stream=file_bytes, filetype="pdf")
+    full_text = ""
+    for page in pdf_document:
+        full_text += page.get_text()  # extracts plain Unicode text from the page
+    pdf_document.close()
+    return full_text
 
 def clean_text(raw: str) -> str:
     """
@@ -43,12 +62,16 @@ def guess_title(text: str) -> str:
     return "Unknown Title"
 
 
+# PHASE 1 ENDPOINTS
+
+# health check endpoint
 @app.get("/")
 def health_check():
     return {"status": "ok", "message": "Research Buddy API is running"}
 
 
 # PDF upload endpoint
+# accepts a PDF, extracts text, and returns basic metadata + a preview of the raw text
 @app.post("/upload")
 async def upload_pdf(file: UploadFile = File(...)):
     if file.content_type != "application/pdf":
@@ -57,12 +80,12 @@ async def upload_pdf(file: UploadFile = File(...)):
             detail=f"Only PDF files are accepted. Got: {file.content_type}"
         )
 
-    file_bytes = await file.read()
+    file_bytes = await file.read()      #1 read the uploaded file's bytes into memory
 
-    pdf_stream = io.BytesIO(file_bytes)
+    pdf_stream = io.BytesIO(file_bytes) #2 converts raw PDF bytes into a file-like object in memory
 
     try:
-        doc = fitz.open(stream=pdf_stream, filetype="pdf")
+        doc = fitz.open(stream=pdf_stream, filetype="pdf") #3 opens the PDF using PyMuPDF, which can handle file-like objects directly
     except Exception as e:
         raise HTTPException(
             status_code=422,
@@ -94,6 +117,49 @@ async def upload_pdf(file: UploadFile = File(...)):
         "title_guess": title_guess,
         "page_count": page_count,
         "word_count": word_count,
-        "raw_text": full_text[:2000],   
+        "raw_text": full_text[:5000],   # first 5000 chars as a preview on dashborad
         "full_text": full_text,          
     }
+
+
+# PHASE 2 — /analyze ENDPOINT
+# Full ML pipeline: extract text → split sections → TF-IDF keywords →
+# structured summary → stats. Returns everything in one JSON payload.
+@app.post("/analyze")
+async def analyze_paper(file: UploadFile = File(...)):
+    if not file.filename.endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are accepted.")
+ 
+    try:
+        # 1: read raw bytes from the uploaded file
+        file_bytes = await file.read()
+ 
+        # 2: extract all text from the PDF using PyMuPDF
+        text = extract_text_from_pdf(file_bytes)
+ 
+        if not text.strip():
+            raise ValueError("No text could be extracted. The PDF may be scanned/image-only.")
+ 
+        # 3: split text into named academic sections via regex
+        sections = split_into_sections(text)
+ 
+        # 4: run TF-IDF keyword extraction independently on each section
+        keywords = extract_keywords_tfidf(sections, top_n=8)
+ 
+        # 5: generate the 5-field heuristic structured summary
+        summary = generate_structured_summary(text, sections)
+ 
+        # 6: compute basic reading statistics
+        stats = compute_stats(text, sections)
+ 
+        return {
+            "filename": file.filename,
+            "stats":    stats,
+            "sections": sections,
+            "keywords": keywords,
+            "summary":  summary,
+            "status":   "success",
+        }
+ 
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(exc)}")

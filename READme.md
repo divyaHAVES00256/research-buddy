@@ -65,12 +65,12 @@
 Research Buddy is a **full-stack AI assistant** for university students that makes dense academic papers accessible. Paste in a paper — get back a plain-English summary, the key topics, and a chat interface to ask specific questions, all grounded in the actual paper text.
 
 ```
-Without Research Buddy              With Research Buddy
-─────────────────────               ────────────────────────────
-📄 46-page PDF paper       ──►     📊 Auto-summary in seconds
-😵 3 hours reading                  🏷️  Top keywords extracted
-🤔 Still confused                   💬 "What is the proposed method?"
-📝 Patchy notes                     ✅ Direct answer with citations
+   Without Research Buddy                  With ResearchBuddy
+────────────────────────────          ────────────────────────────
+  📄 46-page PDF paper       ──►       📊 Auto-summary in seconds
+  😵 3 hours reading                   🏷️ Top keywords extracted
+  🤔 Still confused                    💬 "What is the proposed method?"
+  📝 Patchy notes                      ✅ Direct answer with citations
 ```
 
 ---
@@ -82,7 +82,7 @@ Without Research Buddy              With Research Buddy
 │                     RESEARCH BUDDY ROADMAP                          │
 ├──────────────┬──────────────┬──────────────┬────────────────────────┤
 │   PHASE 1    │   PHASE 2    │   PHASE 3    │       PHASE 4          │
-│  ✅ DONE     │  🔜 NEXT     │  🔜 SOON     │      🔜 FUTURE         │
+│  ✅ DONE     │  🔜 NEXT     │  🔜 SOON     │      🔜 FUTURE       │
 ├──────────────┼──────────────┼──────────────┼────────────────────────┤
 │              │              │              │                        │
 │  PDF Upload  │  TF-IDF      │  RAG Q&A     │  Paper History         │
@@ -91,7 +91,7 @@ Without Research Buddy              With Research Buddy
 │  Dark UI     │  Keyword UI  │  Chat UI     │  Export to notes       │
 │              │              │              │                        │
 ├──────────────┴──────────────┴──────────────┴────────────────────────┤
-│  Progress: ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  25%                  │
+│  Progress: ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  25%                   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -110,25 +110,25 @@ Without Research Buddy              With Research Buddy
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  📤  Drag-and-drop PDF upload zone                  │
-│      └─ Click-to-browse fallback                    │
+│  📤  Drag-and-drop PDF upload zone                  |
+│      └─ Click-to-browse fallback                     |
 │      └─ File type + size validation                 │
 │                                                     │
-│  🔍  Backend text extraction (PyMuPDF)              │
+│  🔍  Backend text extraction (PyMuPDF)               │
 │      └─ Full Unicode text from all pages            │
 │      └─ Page-by-page parsing                        │
 │      └─ Text cleaning (whitespace, hyphens)         │
 │      └─ Heuristic title detection                   │
 │                                                     │
-│  📊  Metadata dashboard card                        │
+│  📊  Metadata dashboard card                         │
 │      └─ Filename, guessed title                     │
 │      └─ Page count, word count                      │
 │                                                     │
-│  📝  Extracted text preview panel                   │
+│  📝  Extracted text preview panel                    │
 │      └─ First 2,000 characters                      │
 │      └─ Monospace scrollable viewer                 │
 │                                                     │
-│  🎨  Full dark-theme UI                             │
+│  🎨  Full dark-theme UI                              │
 │      └─ Sidebar with phase progress bar             │
 │      └─ Smooth upload state transitions             │
 │      └─ Fade-in animations on results               │
@@ -141,8 +141,8 @@ Without Research Buddy              With Research Buddy
 ┌──────────────────────────────────────────────────────────────────┐
 │  IDLE STATE — upload zone visible                                │
 │                                                                  │
-│  ┌─────────┐  ┌────────────────────────────────────────────┐   │
-│  │ ⚗️      │  │  Paper Dashboard               Phase 1 ·  │   │
+│  ┌─────────┐  ┌────────────────────────────────────────────┐     │
+│  │   ⚗️    │  │   Paper Dashboard               Phase 1 ·  │     │
 │  │ Research│  │  Upload a research paper       Text Extract│   │
 │  │ Buddy   │  ├────────────────────────────────────────────┤   │
 │  │─────────│  │                                            │   │
@@ -577,8 +577,6 @@ Phase 2 will add:
 ██████╔╝██║ ╚████╔╝    ██║   ██║  ██║
 ╚═════╝ ╚═╝  ╚═══╝     ╚═╝   ╚═╝  ╚═╝
 ```
-
-**Built by DIVYAꨄ**  
 BTech CSE · Netaji Subhas University Of Technology, Delhi
 
 <br/>

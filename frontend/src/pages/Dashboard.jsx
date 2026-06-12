@@ -5,6 +5,10 @@ import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import UploadZone from "../components/UploadZone";
 import PaperCard from "../components/PaperCard";
+import StatsBar     from "../components/StatsBar";
+import KeywordsPanel from "../components/KeywordsPanel";
+import SummaryPanel  from "../components/SummaryPanel";
+ 
 
 export default function Dashboard() {
   // Track the current upload workflow state.
@@ -145,7 +149,7 @@ export default function Dashboard() {
                     </span>
                   </div>
                   <span className="text-xs" style={{ color: "#94a3b8" }}>
-                    First 2,000 characters
+                    First 5,000 characters
                   </span>
                 </div>
 
