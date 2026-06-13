@@ -1,11 +1,17 @@
-# Phase 1 dependencies
+# ── Phase 1 ───────────────────────────────────────────────────────────────────
 fastapi==0.111.0          # Web framework — async, fast, auto-generates OpenAPI docs
 uvicorn==0.29.0           # ASGI server that runs FastAPI
+pdfplumber==0.11.0        # PDF text extraction — handles tables and multi-column layouts
 python-multipart==0.0.9   # Required by FastAPI to parse multipart/form-data (file uploads)
-pymupdf==1.24.3           # PDF text extraction (the 'fitz' import)
- 
-# Phase 2 dependencies
-scikit-learn==1.5.0       # Provides TfidfVectorizer for keyword extraction
-numpy==1.26.4             # Required by scikit-learn for matrix operations;
-                          # also used directly for score aggregation in nlp_utils.py
+
+# ── Phase 2 ───────────────────────────────────────────────────────────────────
+scikit-learn==1.4.2       # TF-IDF vectorizer for keyword extraction
+nltk==3.8.1               # Sentence tokenization for summary generation
+numpy==1.26.4             # Numerical arrays — used by scikit-learn and sentence-transformers
+
+# ── Phase 3 ───────────────────────────────────────────────────────────────────
+chromadb==0.5.0           # In-memory vector database for storing and querying embeddings
+sentence-transformers==3.0.0  # Loads all-MiniLM-L6-v2 model for local text embeddings
+google-genai==1.16.0    # Official Google SDK to call Gemini 1.5 Flash API
+python-dotenv==1.0.1      # Loads GEMINI_API_KEY from backend/.env into os.environ
 

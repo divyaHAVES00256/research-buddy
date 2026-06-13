@@ -1,7 +1,9 @@
 # backend/main.py
 import io                          
-import re                          
-from fastapi import FastAPI, File, UploadFile, HTTPException
+import re   
+import os
+
+from fastapi import FastAPI, File, Form, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import fitz                        #PyMuPDF
 from nlp_utils import (
@@ -10,12 +12,14 @@ from nlp_utils import (
     generate_structured_summary,
     compute_stats,
 )
+from pydantic import BaseModel
+from rag_utils import build_vector_index, generate_answer, get_collection_info, query_index
 
 # Create the FastAPI application instance
 app = FastAPI(
     title="Research Buddy API",
     version="1.0.0",
-    description="Phase 2 — Structured Summarization and Analysis. Upload a PDF and get back structured insights about the paper's content.",
+    description="Phase 3 — Retrieval-Augmented Generation. Upload a PDF and get back structured insights about the paper's content.",
 )
 
 # Add CORS middleware 
@@ -62,19 +66,21 @@ def guess_title(text: str) -> str:
     return "Unknown Title"
 
 
-# PHASE 1 ENDPOINTS
-
 # health check endpoint
 @app.get("/")
 def health_check():
     return {"status": "ok", "message": "Research Buddy API is running"}
 
+# PHASE 1 - /upload ENDPOINTS
 
 # PDF upload endpoint
 # accepts a PDF, extracts text, and returns basic metadata + a preview of the raw text
 @app.post("/upload")
 async def upload_pdf(file: UploadFile = File(...)):
-    if file.content_type != "application/pdf":
+    if (
+        file.content_type != "application/pdf"
+        or not file.filename.lower().endswith(".pdf")
+    ):
         raise HTTPException(
             status_code=400,
             detail=f"Only PDF files are accepted. Got: {file.content_type}"
@@ -123,6 +129,7 @@ async def upload_pdf(file: UploadFile = File(...)):
 
 
 # PHASE 2 — /analyze ENDPOINT
+
 # Full ML pipeline: extract text → split sections → TF-IDF keywords →
 # structured summary → stats. Returns everything in one JSON payload.
 @app.post("/analyze")
@@ -163,3 +170,76 @@ async def analyze_paper(file: UploadFile = File(...)):
  
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(exc)}")
+    
+
+# PHASE 3 — /index ENDPOINT
+
+# Chunks the paper text, embeds each chunk using
+# sentence-transformers, and stores everything in ChromaDB
+@app.post("/index")
+async def index_paper(
+    paper_id: str = Form(...),
+    file: UploadFile = File(...)
+):
+    file_bytes = await file.read()
+
+    try:
+        text = extract_text_from_pdf(file_bytes)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to read PDF: {str(e)}")
+
+    if not text.strip():
+        raise HTTPException(status_code=422, detail="No extractable text in this PDF.")
+
+    try:
+        chunks_indexed = build_vector_index(paper_id, text)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Indexing failed: {str(e)}")
+
+    info = get_collection_info(paper_id)
+
+    return {
+        "paper_id": paper_id,
+        "chunks_indexed": chunks_indexed,
+        "collection_exists": info["exists"],
+        "status": "indexed",
+    }
+
+
+# Pydantic model for the /ask request body
+class AskRequest(BaseModel):
+    paper_id: str
+    question: str
+
+
+# PHASE 3 — /ask ENDPOINT
+
+# Embeds the user's question, retrieves the top-4 most
+# relevant chunks from ChromaDB, then calls Gemini to generate a grounded answer
+@app.post("/ask")
+async def ask_question(request: AskRequest):
+   
+    if not request.question.strip():
+        raise HTTPException(status_code=400, detail="Question cannot be empty.")
+
+    try:
+        # Step 1: semantic search — find the 4 most relevant chunks
+        context_chunks = query_index(request.paper_id, request.question, top_k=4)
+    except ValueError as e:
+        # query_index raises ValueError if the paper hasn't been indexed yet
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Retrieval failed: {str(e)}")
+
+    try:
+        # Step 2: generation — Gemini reads the chunks and answers the question
+        answer = generate_answer(request.question, context_chunks)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Generation failed: {str(e)}")
+
+    return {
+        "question": request.question,
+        "answer": answer,
+        "sources": context_chunks,  
+        "status": "success",
+    }

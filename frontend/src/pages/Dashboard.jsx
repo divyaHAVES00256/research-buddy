@@ -8,6 +8,7 @@ import PaperCard from "../components/PaperCard";
 import StatsBar     from "../components/StatsBar";
 import KeywordsPanel from "../components/KeywordsPanel";
 import SummaryPanel  from "../components/SummaryPanel";
+import ChatPanel from "../components/ChatPanel";
  
 
 export default function Dashboard() {
@@ -32,6 +33,10 @@ export default function Dashboard() {
   // Controls the fade-in animation for Phase 2 results
   const [showAnalysis, setShowAnalysis] = useState(false);
 
+  //PHASE3
+  // Stores the raw File object so ChatPanel can call /api/index 
+  const [pdfFile, setPdfFile] = useState(null);
+
   // Called by UploadZone when the user drops or selects a PDF file
   async function handleFileUpload(file) {
     setPaperData(null);
@@ -41,10 +46,12 @@ export default function Dashboard() {
     setAnalysisState("idle");
     setAnalysisError("");
     setShowAnalysis(false);
-
+    
     // FormData is the browser API for encoding multipart/form-data.
     const formData = new FormData();
     formData.append("file", file);
+
+    setPdfFile(file);
 
     try {
       // POST to /api/upload 
@@ -104,6 +111,7 @@ export default function Dashboard() {
     setAnalysisState("idle");
     setAnalysisError("");
     setShowAnalysis(false);
+    setPdfFile(null);
   }
 
    return (
@@ -129,12 +137,12 @@ export default function Dashboard() {
             </p>
           </div>
  
-          {/* Phase badge — updated to reflect Phase 2 */}
+          {/* Phase badge — updated to reflect Phase 3 */}
           <span
             className="text-xs font-medium px-3 py-1 rounded-full"
             style={{ backgroundColor: "#6c63ff20", color: "#6c63ff" }}
           >
-            Phase 2 · ML Analysis
+            Phase 3 · RAG Chat
           </span>
         </header>
  
@@ -168,7 +176,7 @@ export default function Dashboard() {
             <div className="space-y-6 animate-fade-in-up">
  
               {/* ════════════════════════════════════════════════════════════
-                  PHASE 1 PANELS — exactly as they were
+                  PHASE 1 PANELS — file metadata and extracted text preview
               ════════════════════════════════════════════════════════════ */}
  
               {/* Metadata card */}
@@ -292,6 +300,33 @@ export default function Dashboard() {
                   />
                   <KeywordsPanel keywords={analysisData.keywords} />
                   <SummaryPanel summary={analysisData.summary} />
+
+                  {/* ════════════════════════════════════════════════════════════
+                  PHASE 3 PANELS — RAG Chat Panel 
+              ════════════════════════════════════════════════════════════ */}
+                  <div className="flex items-center gap-4 pt-2">
+                    <div className="flex-1 border-t" style={{ borderColor: "#2a2d3e" }} />
+                    <span
+                      className="text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full"
+                      style={{
+                        color: "#00d4aa",
+                        backgroundColor: "#00d4aa15",
+                        border: "1px solid #00d4aa30",
+                      }}
+                    >
+                      RAG · Phase 3
+                    </span>
+                    <div className="flex-1 border-t" style={{ borderColor: "#2a2d3e" }} />
+                  </div>
+
+                  {/* ChatPanel — only render when analysis is complete and we have the PDF file */}
+                  {analysisState === "success" && pdfFile && (
+                    <ChatPanel
+                      paperId={paperData.filename.replace(/\.pdf$/i, "")}
+                      pdfFile={pdfFile}
+                    />
+                  )}
+                 
                 </div>
               )}
  
