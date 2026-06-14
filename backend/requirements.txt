@@ -15,3 +15,7 @@ sentence-transformers==3.0.0  # Loads all-MiniLM-L6-v2 model for local text embe
 google-genai==1.16.0    # Official Google SDK to call Gemini 1.5 Flash API
 python-dotenv==1.0.1      # Loads GEMINI_API_KEY from backend/.env into os.environ
 
+# Phase 4 — PostgreSQL + auth
+asyncpg==0.29.0
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
