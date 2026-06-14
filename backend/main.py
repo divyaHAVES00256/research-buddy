@@ -2,6 +2,7 @@
 import io                          
 import re   
 import os
+import uuid
 
 from fastapi import FastAPI, File, Form, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -54,6 +55,17 @@ def clean_text(raw: str) -> str:
     text = re.sub(r"(?<!\n)\n(?!\n)", " ", text)
     text = re.sub(r" {2,}", " ", text)
     return text.strip()
+
+
+def make_paper_id(filename: str) -> str:
+    """
+    Create a safe paper_id from the uploaded filename.
+    """
+    base = filename.rsplit(".", 1)[0]
+    safe = re.sub(r"[^a-zA-Z0-9._-]+", "-", base)
+    safe = safe.strip("._-")[:50] or "paper"
+    unique = uuid.uuid4().hex
+    return f"{safe}-{unique}"
 
 
 def guess_title(text: str) -> str:
@@ -115,10 +127,12 @@ async def upload_pdf(file: UploadFile = File(...)):
     doc.close()
 
     title_guess = guess_title(full_text)
+    paper_id = make_paper_id(file.filename)
 
     # Return the structured response
     return {
         "status": "success",
+        "paper_id": paper_id,
         "filename": file.filename,
         "title_guess": title_guess,
         "page_count": page_count,
@@ -176,6 +190,8 @@ async def analyze_paper(file: UploadFile = File(...)):
 
 # Chunks the paper text, embeds each chunk using
 # sentence-transformers, and stores everything in ChromaDB
+# The paper_id is used as the Chroma collection name, 
+# so it should be unique for each paper (e.g. a UUID or a sanitized version of the title)
 @app.post("/index")
 async def index_paper(
     paper_id: str = Form(...),

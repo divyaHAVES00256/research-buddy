@@ -301,7 +301,7 @@ export default function ChatPanel({ paperId, pdfFile }) {
                 Ask the Paper
               </div>
               <div style={{ color: "#64748b", fontSize: "11px" }}>
-                Powered by RAG + Gemini 1.5 Flash
+                Powered by RAG + Gemini 2.5 Flash
               </div>
             </div>
           </div>
