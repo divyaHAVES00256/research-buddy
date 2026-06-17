@@ -104,75 +104,10 @@ Research Buddy is a **full-stack AI assistant** for university students that mak
 
 ---
 
-## ✅ Phase 1 — What's Built Now
-
-### Features shipped in Phase 1
-
-```
-┌─────────────────────────────────────────────────────┐
-│  📤  Drag-and-drop PDF upload zone                  |
-│      └─ Click-to-browse fallback                     |
-│      └─ File type + size validation                 │
-│                                                     │
-│  🔍  Backend text extraction (PyMuPDF)               │
-│      └─ Full Unicode text from all pages            │
-│      └─ Page-by-page parsing                        │
-│      └─ Text cleaning (whitespace, hyphens)         │
-│      └─ Heuristic title detection                   │
-│                                                     │
-│  📊  Metadata dashboard card                         │
-│      └─ Filename, guessed title                     │
-│      └─ Page count, word count                      │
-│                                                     │
-│  📝  Extracted text preview panel                    │
-│      └─ First 2,000 characters                      │
-│      └─ Monospace scrollable viewer                 │
-│                                                     │
-│  🎨  Full dark-theme UI                              │
-│      └─ Sidebar with phase progress bar             │
-│      └─ Smooth upload state transitions             │
-│      └─ Fade-in animations on results               │
-└─────────────────────────────────────────────────────┘
-```
 
 ### Screenshots (UI States)
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│  IDLE STATE — upload zone visible                                │
-│                                                                  │
-│  ┌─────────┐  ┌────────────────────────────────────────────┐     │
-│  │   ⚗️    │  │   Paper Dashboard               Phase 1 ·  │     │
-│  │ Research│  │  Upload a research paper       Text Extract│   │
-│  │ Buddy   │  ├────────────────────────────────────────────┤   │
-│  │─────────│  │                                            │   │
-│  │ ⊞ Dash  │  │     ┌─────────────────────────────┐       │   │
-│  │ ⊟ Hist· │  │     │                             │       │   │
-│  │ ◈ Q&A · │  │     │   📄  Drag & drop a PDF     │       │   │
-│  │ ⊕ Set · │  │     │       or click to browse    │       │   │
-│  │─────────│  │     │                             │       │   │
-│  │Phase 1/4│  │     └─────────────────────────────┘       │   │
-│  │ ████░░░ │  │                                            │   │
-│  └─────────┘  └────────────────────────────────────────────┘   │
-└──────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────┐
-│  SUCCESS STATE — results visible                                 │
-│                                                                  │
-│  ┌─────────┐  ┌────────────────────────────────────────────┐   │
-│  │ ⚗️      │  │  ✓ Extraction complete    [Upload Another] │   │
-│  │ Research│  ├────────────────────────────────────────────┤   │
-│  │ Buddy   │  │  📑 Attention Is All You Need              │   │
-│  │─────────│  │     attention_2017.pdf          [Extracted]│   │
-│  │ ⊞ Dash ●│  │  ┌──────────┬──────────┬──────────┐       │   │
-│  │ ⊟ Hist· │  │  │  📃 15   │  ✏️ 9,200│  📎 PDF  │       │   │
-│  │ ◈ Q&A · │  │  │  Pages   │  Words   │  Format  │       │   │
-│  │ ⊕ Set · │  │  └──────────┴──────────┴──────────┘       │   │
-│  │─────────│  ├────────────────────────────────────────────┤   │
-│  │Phase 1/4│  │  ● Extracted Text Preview    [2,000 chars] │   │
-│  │ ████░░░ │  │  Attention mechanisms allow...             │   │
-│  └─────────┘  └────────────────────────────────────────────┘   │
-└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -188,17 +123,17 @@ Research Buddy is a **full-stack AI assistant** for university students that mak
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │                    React Application                        │   │
 │   │                                                             │   │
-│   │   ┌──────────┐   ┌──────────────────────────────────────┐  │   │
-│   │   │ Sidebar  │   │           Dashboard Page             │  │   │
-│   │   │          │   │                                      │  │   │
-│   │   │ Nav links│   │  ┌────────────┐  ┌────────────────┐  │  │   │
-│   │   │ Phase bar│   │  │ UploadZone │  │   PaperCard    │  │  │   │
-│   │   └──────────┘   │  │            │  │                │  │  │   │
-│   │                  │  │ drag & drop│  │ filename       │  │  │   │
-│   │                  │  │ FormData   │  │ page count     │  │  │   │
-│   │                  │  │ Axios POST │  │ word count     │  │  │   │
-│   │                  │  └────────────┘  └────────────────┘  │  │   │
-│   │                  └──────────────────────────────────────┘  │   │
+│   │   ┌──────────┐   ┌──────────────────────────────────────┐   │   │
+│   │   │ Sidebar  │   │           Dashboard Page             │   │   │
+│   │   │          │   │                                      │   │   │
+│   │   │ Nav links│   │  ┌────────────┐  ┌────────────────┐  │   │   │
+│   │   │ Phase bar│   │  │ UploadZone │  │   PaperCard    │  │   │   │
+│   │   └──────────┘   │  │            │  │                │  │   │   │
+│   │                  │  │ drag & drop│  │ filename       │  │   │   │
+│   │                  │  │ FormData   │  │ page count     │  │   │   │
+│   │                  │  │ Axios POST │  │ word count     │  │   │   │
+│   │                  │  └────────────┘  └────────────────┘  │   │   │
+│   │                  └──────────────────────────────────────┘   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 │                              │                                      │
 │                    POST /api/upload                                 │
@@ -207,8 +142,8 @@ Research Buddy is a **full-stack AI assistant** for university students that mak
                                │
                     ┌──────────▼──────────┐
                     │   Vite Dev Proxy    │
-                    │  /api/* → :8000/*  │
-                    │  (strips /api)     │
+                    │  /api/* → :8000/*   │
+                    │  (strips /api)      │
                     └──────────┬──────────┘
                                │
                     POST /upload
