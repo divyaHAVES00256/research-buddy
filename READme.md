@@ -18,7 +18,7 @@
                               ╚═════╝  ╚═════╝ ╚═════╝ ╚═════╝    ╚═╝   
 ```
 
-### ⚗️ AI-Powered Academic Paper Summarizer & Q&A Assistant
+### 🤖 AI-Powered Academic Paper Summarizer & Q&A Assistant
 
 <br/>
 
