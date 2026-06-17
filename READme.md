@@ -418,37 +418,6 @@ Accepts a PDF file, extracts text and metadata using PyMuPDF.
 | `400` | Uploaded file is not a PDF (wrong MIME type) |
 | `422` | File is corrupt or cannot be parsed by PyMuPDF |
 
----
-
-## 🎨 Design System
-
-```
-COLOR PALETTE
-─────────────────────────────────────────────────────────────
-  #0f1117   ██  Page background    (near-black, blue tint)
-  #1a1d27   ██  Sidebar + header   (slightly lighter)
-  #1e2130   ██  Cards & panels     (surface color)
-  #2a2d3e   ██  Borders & dividers (subtle separator)
-  #6c63ff   ██  Accent (purple)    (buttons, active states)
-  #5a52d5   ██  Accent hover       (darker on hover)
-  #e2e8f0   ██  Primary text       (near-white)
-  #94a3b8   ██  Secondary text     (muted grey)
-  #10b981   ██  Success green      (upload complete)
-  #ef4444   ██  Error red          (validation / network errors)
-
-TYPOGRAPHY
-─────────────────────────────────────────────────────────────
-  Font family  →  Inter (Google Fonts, variable weight 300–700)
-  Scale        →  xs (12px) · sm (14px) · base (16px) · xl (20px)
-  Weights      →  Regular 400 · Medium 500 · Semibold 600 · Bold 700
-
-ANIMATIONS
-─────────────────────────────────────────────────────────────
-  fadeInUp     →  Results appear: opacity 0→1, translateY 16px→0  (350ms)
-  glowPulse    →  Drag-over glow: box-shadow pulses purple  (1500ms)
-  spin         →  Upload spinner: 360° rotation  (1000ms linear)
-  transitions  →  All interactive states: 200–300ms ease
-```
 
 ---
 
