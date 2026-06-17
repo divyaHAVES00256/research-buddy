@@ -65,7 +65,7 @@
 Research Buddy is a **full-stack AI assistant** for university students that makes dense academic papers accessible. Paste in a paper — get back a plain-English summary, the key topics, and a chat interface to ask specific questions, all grounded in the actual paper text.
 
 ```
-   Without Research Buddy                  With ResearchBuddy
+   Without Research Buddy                  With Research Buddy
 ────────────────────────────          ────────────────────────────
   📄 46-page PDF paper       ──►       📊 Auto-summary in seconds
   😵 3 hours reading                   🏷️ Top keywords extracted
