@@ -143,7 +143,7 @@ Research Buddy is a **full-stack AI assistant** for university students that mak
                     ┌──────────▼──────────┐
                     │   Vite Dev Proxy    │
                     │  /api/* → :8000/*   │
-                    │  (strips /api)     │
+                    │  (strips /api)      │
                     └──────────┬──────────┘
                                │
                     POST /upload
